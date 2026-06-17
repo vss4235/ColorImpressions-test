@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Impressions</title>
+<link rel="stylesheet" href="https://use.typekit.net/ajs1bbh.css">
+<style>
+
+  @font-face {
+    font-family: 'TWKEverett';
+    src: url('TWKEverett-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  @font-face {
+    font-family: 'TWKEverettMono';
+    src: url('TWKEverettMono/Web/TWKEverettMono-Light.woff2') format('woff2'),
+         url('TWKEverettMono/Web/TWKEverettMono-Light.woff') format('woff'),
+         url('TWKEverettMono/Web/TWKEverettMono-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #ffffff;
+    --paper: #000000;
+    --mid: #212121;
+  }
+
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    background: var(--ink);
+  }
+
+  /* ── ANIMATED BACKGROUND GRID ── */
+  #bgGrid {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    z-index: 0;
+  }
+  .bg-cell {
+    opacity: 0;
+    transition: opacity 3s ease;
+  }
+
+  #gridLines {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(to right,  rgba(0,0,0,0.15) 0.5px, transparent 0.5px),
+      linear-gradient(to bottom, rgba(0,0,0,0.15) 0.5px, transparent 0.5px);
+  }
+
+  /* ── LAYOUT CONTAINER ── */
+  .phone-wrap {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    height: 100vh;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* ── HEADER ── */
+  .l-header {
+    background: transparent;
+    flex-shrink: 0;
+    z-index: 10;
+    padding: 1.8rem 1.5rem;
+    display: flex;
+    justify-content: center;
+  }
+  .l-header-text {
+    font-family: 'panel-sans-mono', monospace;
+    font-size: 1rem;
+    font-weight: 400;
+    font-style: italic;
+    letter-spacing: 0.009em;
+    white-space: nowrap;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 500px;
+    padding: 0.6rem 1.5rem;
+    transform: scaleX(0.85);
+    transform-origin: center center;
+  }
+
+  /* ── DESCRIPTION ── */
+  .content-area {
+    flex: 1;
+    position: relative;
+  }
+  .desc-block {
+    position: absolute;
+    bottom: 2rem;
+    left: 2.5rem;
+    max-width: 350px;
+    font-family: 'TWKEverettMono', monospace;
+    font-weight: 300;
+    font-style: normal;
+    font-size: 1.1rem;
+     letter-spacing: -0.03em;
+    line-height: 1.45;
+    color: #000000;
+    transition: opacity 0.7s ease;
+  }
+  .desc-block p + p { margin-top: 0.9em; }
+  .desc-default { opacity: 1; }
+  .desc-hover   { opacity: 0; }
+  .content-area.show-more .desc-default { opacity: 0; }
+  .content-area.show-more .desc-hover   { opacity: 1; }
+
+  /* ── BOTTOM NAV ── */
+  .bottom-nav {
+    flex-shrink: 0;
+    display: flex;
+    gap: 8px;
+    padding: 0.8rem 1rem 1.5rem;
+  }
+  .nav-btn {
+    flex: 1;
+    padding: 0.9rem 0.5rem;
+    border: 1.5px solid #000000;
+    border-radius: 500px;
+    background: rgba(255,255,255,0.88);
+    font-family: 'panel-sans-mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #000000;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { background: #ffffff; }
+  .nav-btn--disabled {
+    opacity: 0.35;
+    cursor: default;
+    pointer-events: none;
+  }
+
+</style>
+</head>
+<body>
+
+<div id="bgGrid"></div>
+<div id="gridLines"></div>
+
+<div class="phone-wrap">
+  <header class="l-header">
+    <div class="l-header-text">Color Impressions</div>
+  </header>
+  <div class="content-area">
+    <div class="desc-block desc-default">
+      <p>Color Impressions is a palette creation tool that offers insight into who you are. The tool is part of an ongoing research project aiming to explore people's personal relationships with color, as well as the influence of place on color perception.</p>
+    </div>
+    <div class="desc-block desc-hover">
+      <p>By answering questions that explore your color preferences—rooted in memories, feelings, and personal experiences—you create a palette that offers insight into who you are and how you relate to color.</p>
+      <p>By collecting palettes from participants around the world, the project investigates how cultural, geographical, and individual experiences shape our connections to color.</p>
+      <p>The ColorCard Archive visualizes these shared and contrasting impressions, revealing patterns across people and places.</p>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <a href="final color app_7-claude.html" class="nav-btn">Build your palette</a>
+    <button class="nav-btn nav-btn--disabled">Colorcard archive</button>
+    <button class="nav-btn nav-btn--disabled">References</button>
+  </nav>
+</div>
+
+<script>
+(function () {
+  var COLORS = [
+    '#eeecc5', '#f7f382', '#c1bc78', '#c5a115',
+    '#fff1d9', '#f48656', '#ff8500', '#ddd3cd',
+    '#b37d58', '#e8d3c8', '#f9afa0', '#ba3b33',
+    '#8e4040', '#e5bebe', '#f2a5e4', '#ff6cd5',
+    '#d9c5ef', '#ae94ff', '#7777c9', '#c9e4ff',
+    '#60c0f6', '#4b6188', '#b5e2cf', '#4a8e7e',
+    '#e8f9d9', '#bed8a7', '#c6d130', '#4d7c50',
+    '#ffca00', '#ff4f01', '#5e2b23', '#0091ff',
+    '#d82335', '#ff4848', 
+  ];
+
+  var grid   = document.getElementById('bgGrid');
+  var cells  = [];
+
+  var gridLines = document.getElementById('gridLines');
+
+  function buildGrid() {
+    grid.innerHTML = '';
+    cells = [];
+    var rows  = 3;
+    var cellW = Math.max(90, Math.floor(window.innerWidth / 6));
+    var cols  = Math.ceil(window.innerWidth / cellW);
+    grid.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+    grid.style.gridTemplateRows    = 'repeat(' + rows + ', 1fr)';
+    // sync grid line overlay to actual cell dimensions
+    var lineCellW = window.innerWidth  / cols;
+    var lineCellH = window.innerHeight / rows;
+    gridLines.style.backgroundSize = lineCellW + 'px ' + lineCellH + 'px';
+    for (var i = 0; i < cols * rows; i++) {
+      var cell = document.createElement('div');
+      cell.className = 'bg-cell';
+      grid.appendChild(cell);
+      cells.push({ el: cell, active: false });
+    }
+  }
+
+  function lightCell() {
+    var idle = cells.filter(function (c) { return !c.active; });
+    if (idle.length === 0) return;
+    var entry = idle[Math.floor(Math.random() * idle.length)];
+    var color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    entry.active = true;
+    entry.el.style.backgroundColor = color;
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        entry.el.style.opacity = '1';
+      });
+    });
+    var hold = 1000 + Math.random() * 5000;
+    setTimeout(function () {
+      entry.el.style.opacity = '0';
+      setTimeout(function () { entry.active = false; }, 3000);
+    }, 3000 + hold);
+  }
+
+  buildGrid();
+
+  // seed a handful of cells immediately, staggered
+  for (var i = 0; i < 8; i++) {
+    setTimeout(lightCell, i * 250);
+  }
+
+  // keep one new cell lighting up every ~1.5 s
+  setInterval(lightCell, 1500);
+
+  var resizeTimer;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(buildGrid, 200);
+  });
+
+  // light up the cell under the mouse on hover
+  var lastHoverIndex = -1;
+  window.addEventListener('mousemove', function (e) {
+    var gridRect = grid.getBoundingClientRect();
+    var cols = parseInt(grid.style.gridTemplateColumns.match(/\d+/)[0]);
+    var rows = parseInt(grid.style.gridTemplateRows.match(/\d+/)[0]);
+    var col = Math.floor((e.clientX - gridRect.left) / gridRect.width  * cols);
+    var row = Math.floor((e.clientY - gridRect.top)  / gridRect.height * rows);
+    col = Math.max(0, Math.min(cols - 1, col));
+    row = Math.max(0, Math.min(rows - 1, row));
+    var idx = row * cols + col;
+    if (idx === lastHoverIndex) return;
+    lastHoverIndex = idx;
+    var entry = cells[idx];
+    if (!entry || entry.active) return;
+    var color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    entry.active = true;
+    entry.el.style.backgroundColor = color;
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        entry.el.style.opacity = '1';
+      });
+    });
+    setTimeout(function () {
+      entry.el.style.opacity = '0';
+      setTimeout(function () { entry.active = false; }, 3000);
+    }, 3000 + 500 + Math.random() * 1500);
+  });
+}());
+
+// ── TEXT SCROLL TOGGLE ──
+(function () {
+  var area = document.querySelector('.content-area');
+  var touchStartY = 0;
+
+  window.addEventListener('wheel', function (e) {
+    if (e.deltaY > 0) {
+      area.classList.add('show-more');
+    } else {
+      area.classList.remove('show-more');
+    }
+  }, { passive: true });
+
+  window.addEventListener('touchstart', function (e) {
+    touchStartY = e.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchend', function (e) {
+    var dy = touchStartY - e.changedTouches[0].clientY;
+    if (dy > 20) {
+      area.classList.add('show-more');
+    } else if (dy < -20) {
+      area.classList.remove('show-more');
+    }
+  }, { passive: true });
+}());
+</script>
+</body>
+</html>
